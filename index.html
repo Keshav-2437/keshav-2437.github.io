@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="hb_demo">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>hb_demo</title>
+  <link rel="manifest" href="manifest.json">
+
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-performance.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDaTd7-rsY-Ovu4byOSChu1hjA3FVkfnm0",
+      authDomain: "hb-demo-168ee.firebaseapp.com",
+      projectId: "hb-demo-168ee",
+      storageBucket: "hb-demo-168ee.appspot.com",
+      messagingSenderId: "1068008329021",
+      appId: "1:1068008329021:web:9abee12cc2788a66b0ff54",
+      measurementId: "G-3EHVV5N9NT"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.analytics();
+
+    const messaging = firebase.messaging();
+
+    messaging.requestPermission()
+      .then(() => {
+        console.log('Notification permission granted.');
+        return messaging.getToken();
+      })
+      .then((token) => {
+        console.log('FCM Token:', token);
+      })
+      .catch((error) => {
+        console.error('Error getting permission or token', error);
+      });
+
+    messaging.onMessage((payload) => {
+      console.log('Message received. ', payload);
+      const notificationTitle = payload.notification.title;
+      const notificationOptions = {
+        body: payload.notification.body,
+        icon: payload.notification.icon
+      };
+
+      if (Notification.permission === 'granted') {
+        new Notification(notificationTitle, notificationOptions);
+      }
+    });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.min.js";
+    pdfRenderOptions = {
+      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/cmaps/',
+      cMapPacked: true,
+    }
+  </script>
+  <script>
+    window.addEventListener('load', function(ev) {
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: '1.0.0',  
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
